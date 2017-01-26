@@ -126,6 +126,26 @@ class Endpoint(object):
         else:
             return self._formatreturn(resp)
 
+    def patch(self, the_id, user_data, user_params={}, user_headers={}):
+
+        strjsondata = ujson.dumps(user_data, ensure_ascii=False)
+
+        resp = req.patch(
+            self._url(self.endpoint, the_id),
+            data=strjsondata,
+            headers=self._headers(user_headers),
+            params=self._params(user_params)
+        )
+
+        if resp.status_code != 200:
+            raise ApiError(
+                "GET",
+                self.endpoint,
+                resp.status_code,
+                resp.text)
+        else:
+            return self._formatreturn(resp)
+
     def get(self, the_id=None, level=None, user_params={}, user_headers={}):
 
         if the_id:
