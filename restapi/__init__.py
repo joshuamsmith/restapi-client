@@ -111,7 +111,7 @@ class Endpoint(object):
         strjsondata = ujson.dumps(user_data, ensure_ascii=False)
 
         resp = req.put(
-            self._url(self.endpoint+the_id),
+            self._url(self.endpoint, the_id),
             data=strjsondata,
             headers=self._headers(user_headers),
             params=self._params(user_params)
@@ -168,15 +168,20 @@ class Endpoint(object):
         else:
             return self._formatreturn(resp)
 
-    def delete(self, level=None, user_params={}, user_headers={}):
+    def delete(self, the_id=None, level=None, user_params={}, user_headers={}):
+
+        if the_id:
+            url = self._url(self.endpoint, the_id)
+        else:
+            url = self._url(self.endpoint)
 
         resp = req.delete(
-            self._url(self.endpoint),
+            url,
             headers=self._headers(user_headers),
             params=self._params(user_params)
         )
 
-        if resp.status_code != 200:
+        if resp.status_code != 204:
             raise ApiError(
                 "DELETE",
                 self.endpoint,
